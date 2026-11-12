@@ -38,6 +38,24 @@ struct ProfiloView: View {
 
             Divider()
 
+            Spacer()
+
+            Button(action: {
+                usernameLoggato = ""
+            }) {
+                HStack {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                    Text("Esci").bold()
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .foregroundColor(.black)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(Color.black, lineWidth: 2)
+                )
+            }
+
         }
         .padding()
     }
