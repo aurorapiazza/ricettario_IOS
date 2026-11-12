@@ -27,6 +27,15 @@ struct HomeView: View {
                     .font(.largeTitle)
                     .foregroundColor(.gray)
 
+                if let featured = api.featuredRecipe {
+                    FeaturedRecipeCard(
+                        recipe: featured,
+                        onRefresh: {
+                            api.loadRandomRecipe()
+                        }
+                    )
+                }
+
                 Text("Tutte le ricette")
                     .font(.title2)
                     .bold()
@@ -55,6 +64,9 @@ struct HomeView: View {
                 api.loadRecipesData { (recipes) in
                     self.recipes = recipes
                 }
+            }
+            if api.featuredRecipe == nil {
+                api.loadRandomRecipe()
             }
         }
     }
