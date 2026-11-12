@@ -19,6 +19,22 @@ struct MainTabView: View {
                 Text("Cerca")
             }
 
+            NavigationStack {
+                PreferitiView()
+            }
+            .tabItem {
+                Image(systemName: "heart")
+                Text("Preferiti")
+            }
+
+            NavigationStack {
+                ProfiloView()
+            }
+            .tabItem {
+                Image(systemName: "person")
+                Text("Profilo")
+            }
+
         }
         .accentColor(.black)
     }
