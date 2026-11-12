@@ -56,5 +56,31 @@ class Api: ObservableObject {
             }
         }.resume()
     }
+
+    func loadRandomRecipe() {
+        let urlString = "\(baseURL)/random?number=1&apiKey=\(Secrets.spoonacularKey)"
+
+        guard let url = URL(string: urlString) else {
+            print("URL non valido")
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                print("Errore di rete")
+                return
+            }
+
+            do {
+                let decodedResponse = try JSONDecoder().decode(RandomRecipeResponse.self, from: data)
+
+                DispatchQueue.main.async {
+                    self.featuredRecipe = decodedResponse.recipes.first
+                }
+            } catch {
+                print(error)
+            }
+        }.resume()
+    }
 }
 
