@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FeaturedRecipeCard: View {
     var recipe: Recipe
+    var onRefresh: () -> ()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -20,6 +21,29 @@ struct FeaturedRecipeCard: View {
                 .frame(maxWidth: .infinity)
                 .mask(RoundedRectangle(cornerRadius: 14))
                 }
+
+                HStack {
+                    Text("Ricetta consigliata")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.orange)
+                        .cornerRadius(20)
+
+                    Spacer()
+
+                    Button(action: onRefresh) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.black)
+                            .padding(8)
+                            .background(Color.white.opacity(0.85))
+                            .cornerRadius(20)
+                    }
+                }
+                .padding(10)
 
             }
 
