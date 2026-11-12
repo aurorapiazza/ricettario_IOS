@@ -16,6 +16,10 @@ struct HomeView: View {
         return ""
     }
 
+    var rowCount: Int {
+        return (recipes.count + 1) / 2
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -27,10 +31,22 @@ struct HomeView: View {
                     .font(.title2)
                     .bold()
 
-                ForEach(recipes) { recipe in
-                    RecipeCard(recipe: recipe)
-                }
+                VStack(spacing: 14) {
+                    ForEach(0..<rowCount, id: \.self) { row in
+                        HStack(spacing: 14) {
+                            RecipeCard(recipe: recipes[row * 2])
+                                .frame(maxWidth: .infinity)
 
+                            if row * 2 + 1 < recipes.count {
+                                RecipeCard(recipe: recipes[row * 2 + 1])
+                                    .frame(maxWidth: .infinity)
+                            } else {
+                                Spacer()
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
+                }
             }
             .padding()
         }
