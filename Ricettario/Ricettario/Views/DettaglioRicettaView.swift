@@ -6,6 +6,7 @@ struct DettaglioRicettaView: View{
     @StateObject private var api = Api()
     @State private var dettaglio: RecipeDetail?
     @State private var porzioni: Double=4
+    @State private var spuntati = [Bool]()
     
     var ingredienti: [RecipeDetail.Ingredient]{
         return dettaglio?.extendedIngredients ?? []
@@ -86,6 +87,13 @@ struct DettaglioRicettaView: View{
                 
                 ForEach(0..<ingredienti.count, id: \.self){ indice in
                     HStack{
+                        Button(action:{
+                            spuntati[indice].toggle()
+                        }){
+                            Image(systemName: spuntati[indice] ? "checkmark.square" : "square")
+                                .font(.system(size: 22))
+                                .foregroundColor(.black)
+                        }
                         Text(ingredienti[indice].name)
                         Spacer()
                         Text(quantita(ingredienti[indice]))
@@ -149,6 +157,12 @@ struct DettaglioRicettaView: View{
                     (ricetta) in
                     self.dettaglio = ricetta
                     self.porzioni = ricetta.servings ?? 4
+                    
+                    var nuoveSpunte = [Bool]()
+                    for _ in ricetta.extendedIngredients ?? [] {
+                        nuoveSpunte.append(false)
+                    }
+                    self.spuntati = nuoveSpunte
                 }
             }
         }
