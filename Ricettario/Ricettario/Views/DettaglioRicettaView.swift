@@ -10,6 +10,15 @@ struct DettaglioRicettaView: View{
         return dettaglio?.extendedIngredients ?? []
     }
     
+    var passaggi: [RecipeStep]{
+        if let istruzioni = dettaglio?.analyzedInstructions{
+            if let primoGruppo = istruzioni.first{
+                return primoGruppo.steps
+            }
+        }
+        return []
+    }
+    
     func quantita(_ ingrediente: RecipeDetail.Ingredient) -> String{
         if let metrico = ingrediente.measures?.metric {
             return "\(metrico.amount.formatted()) \(metrico.unitShort)"
@@ -69,6 +78,35 @@ struct DettaglioRicettaView: View{
                             .foregroundColor(.gray)
                     }
                     Divider()
+                }
+                
+                Text("Preparazione")
+                    .font(.title2)
+                    .bold()
+                
+                if dettaglio != nil && passaggi.isEmpty{
+                    Text("Questa ricetta non ha passaggi.")
+                        .foregroundColor(.gray)
+                }
+                
+                ForEach(0..<passaggi.count, id: \.self){ indice in
+                    HStack(alignment: .top, spacing: 12){
+                        Text("\(passaggi[indice].number)")
+                            .bold()
+                            .foregroundColor(.white)
+                            .frame(width: 36, height: 36)
+                            .background(Color.black)
+                            .cornerRadius(18)
+                        
+                        VStack(alignment: .leading, spacing: 4){
+                            Text(passaggi[indice].step)
+                            if let durata = passaggi[indice].length{
+                                Text("\(durata.number) \(durata.unit)")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
                 }
             }
             .padding()
