@@ -114,6 +114,26 @@ struct RicercaView: View {
                     .disabled(!puoCercare)
                 }
 
+                if filtriAttivi > 0 {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            if tipoScelto != 0 {
+                                EtichettaFiltro(testo: tipiNomi[tipoScelto])
+                            }
+                            if dietaScelta != 0 {
+                                EtichettaFiltro(testo: dieteNomi[dietaScelta])
+                            }
+                            if cucinaScelta != 0 {
+                                EtichettaFiltro(testo: "Cucina: " + cucineNomi[cucinaScelta])
+                            }
+                            if tempoMax != 0 {
+                                EtichettaFiltro(testo: "Max \(tempoMax) min")
+                            }
+                        }
+                        .padding(1)
+                    }
+                }
+
                 if errore {
                     Text("Ricerca non riuscita. Controlla la connessione: se il problema resta, la quota giornaliera di Spoonacular potrebbe essere finita.")
                         .foregroundColor(.red)
@@ -137,6 +157,18 @@ struct RicercaView: View {
             }
             .padding()
         }
+    }
+}
+
+struct EtichettaFiltro: View {
+    var testo: String
+
+    var body: some View {
+        Text(testo)
+            .font(.caption)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
     }
 }
 
