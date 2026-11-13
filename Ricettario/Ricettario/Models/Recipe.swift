@@ -23,6 +23,7 @@ struct RecipeDetail: Codable{
     let readyInMinutes: Int?
     let servings: Double?
     let extendedIngredients: [Ingredient]?
+    let analyzedInstructions: [AnalyzedInstruction]?
     
     struct Ingredient:Codable{
         let id: Int?
