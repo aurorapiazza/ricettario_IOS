@@ -29,6 +29,14 @@ struct RecipeCard: View {
             .frame(height: 44)
             }
             }
+            
+            HStack {
+                Text("\(recipe.readyInMinutes ?? 0) min")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Spacer()
+                BottonePreferito(recipe: recipe)
+            }
         }
         .padding(10)
         .overlay(
