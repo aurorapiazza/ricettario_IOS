@@ -1,11 +1,11 @@
 import SwiftUI
-import _SwiftData_SwiftUI
+import SwiftData
 
 struct RegistrazioneView: View {
     @Binding var mostraRegistrazione: Bool
     @Environment(\.modelContext) private var context
     @Query var utenti: [Utente]
-    
+
     @State private var nome = ""
     @State private var cognome = ""
     @State private var username = ""
@@ -13,35 +13,35 @@ struct RegistrazioneView: View {
     @State private var password = ""
     @State private var isPasswordSecured = true
     @State private var messaggioErrore = ""
-    
-    
-    
-    var isEmailValid: Bool{
-        for carattere in email{
-            if carattere == "@"{
+
+    var isEmailValid: Bool {
+        for carattere in email {
+            if carattere == "@" {
                 return true
             }
         }
         return false
     }
-    
-    var isPasswordValid: Bool{
-        var haMaiuscolo = false
+
+    var isPasswordValid: Bool {
+        var haMaiuscola = false
         var haNumero = false
-        
-        for carattere in password{
-            if carattere >= "A" && carattere <= "Z"{
-                haMaiuscolo = true
+
+        for carattere in password {
+            if carattere >= "A" && carattere <= "Z" {
+                haMaiuscola = true
             }
-            if carattere >= "0" && carattere <= "9"{
+            if carattere >= "0" && carattere <= "9" {
                 haNumero = true
             }
         }
-        return password.count >= 8 && haNumero && haMaiuscolo
+
+        return password.count >= 8 && haMaiuscola && haNumero
     }
-    
-    var isFormValid: Bool{
-        return !nome.isEmpty && !cognome.isEmpty && !username.isEmpty && isEmailValid && isPasswordValid    }
+
+    var isFormValid: Bool {
+        return !nome.isEmpty && !cognome.isEmpty && !username.isEmpty && isEmailValid && isPasswordValid
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -62,77 +62,87 @@ struct RegistrazioneView: View {
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
                 }
             }
-            
+
             Text("Username")
-            HStack{
+            HStack {
                 Image(systemName: "person")
                 TextField("username", text: $username)
-            }.padding(10)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
-            
+            }
+            .padding(10)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
+
             Text("Email")
-            HStack{
-                Image(systemName: "envelop").foregroundColor(.gray).font(.headline)
+            HStack {
+                Image(systemName: "envelope").foregroundColor(.gray).font(.headline)
                 TextField("email", text: $email)
-            }.padding(10)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke( email.isEmpty ?  Color.black : Color.red, lineWidth: 1))
-            
+            }
+            .padding(10)
+            .overlay(RoundedRectangle(cornerRadius: 8)
+                .stroke(email.isEmpty || isEmailValid ? Color.black : Color.red, lineWidth: 1))
+
             Text("Password")
-            HStack{
-                if isPasswordSecured{
+            HStack {
+                if isPasswordSecured {
                     SecureField("password", text: $password)
-                }else{
+                } else {
                     TextField("password", text: $password)
                 }
                 Button(action: {
                     isPasswordSecured.toggle()
-                }){
+                }) {
                     Image(systemName: isPasswordSecured ? "eye.slash" : "eye").foregroundColor(.gray)
                 }
-            }.padding(10)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.black, lineWidth: 1))
+            }
+            .padding(10)
+            .overlay(RoundedRectangle(cornerRadius: 8)
+                .stroke(password.isEmpty || isPasswordValid ? Color.black : Color.red, lineWidth: 1))
             Text("Almeno 8 caratteri con una lettera maiuscola e un numero").font(.caption).foregroundColor(.gray)
-            
-            if !messaggioErrore.isEmpty{
+
+            if !messaggioErrore.isEmpty {
                 Text(messaggioErrore).foregroundColor(.red)
             }
 
-            Button(action:{
+            Button(action: {
                 registra()
-            }){
-                Text("Registrati").bold().frame(maxWidth: .infinity).padding().background(Color.black).foregroundColor(.white).cornerRadius(12)
-            }.disabled(!isFormValid)
-            
+            }) {
+                Text("Registrati")
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(isFormValid ? Color.black : Color.gray)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+            }
+            .disabled(!isFormValid)
+
             Spacer()
-            
-            HStack{
+
+            HStack {
                 Spacer()
                 Text("Hai già un account?")
                 Button(action: {
                     mostraRegistrazione = false
-                }){
+                }) {
                     Text("Accedi").bold().foregroundColor(.black)
                 }
                 Spacer()
             }
-            
         }
         .padding()
     }
-    
-    func registra(){
-        for utente in utenti{
-            if  utente.username == username{
-                messaggioErrore = "Questo username è già in uso"
+
+    func registra() {
+        for utente in utenti {
+            if utente.username == username {
+                messaggioErrore = "Questo username è già in uso."
                 return
             }
-            if utente.email == email{
-                messaggioErrore = "Questa email è già registrata"
+            if utente.email == email {
+                messaggioErrore = "Questa email è già registrata."
                 return
             }
         }
-        
+
         let nuovoUtente = Utente(
             nome: nome,
             cognome: cognome,
@@ -140,10 +150,10 @@ struct RegistrazioneView: View {
             email: email,
             password: password
         )
-        
+
         context.insert(nuovoUtente)
         try? context.save()
-        
+
         mostraRegistrazione = false
     }
 }
