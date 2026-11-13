@@ -2,6 +2,8 @@
 import SwiftUI
 
 struct LoginView: View {
+    @Binding var mostraRegistrazione: Bool
+    
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var isPasswordVisible: Bool = false
@@ -64,7 +66,34 @@ struct LoginView: View {
             
             .padding(.horizontal, 24)
             
+            Button(action: {
+                
+            }) {
+                Text("Accedi")
+                    .font(.system(size:18, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.black)
+                    .cornerRadius(12)
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 10)
+            
             Spacer()
+            
+            HStack (spacing: 5) {
+                Text("Non hai un account?")
+                    .font(.system(size: 14))
+                Button(action: {
+                    mostraRegistrazione =  true
+                }) {
+                    Text("Registrati")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.black)
+                }
+            }
+            .padding(.bottom, 20)
         }
     }
 }
