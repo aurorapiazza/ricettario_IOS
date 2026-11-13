@@ -9,6 +9,8 @@ struct RegistrazioneView: View {
     @State private var password = ""
     @State private var isPasswordSecured = true
     
+    
+    
     var isEmailValid: Bool{
         for carattere in email{
             if carattere == "@"{
@@ -16,6 +18,21 @@ struct RegistrazioneView: View {
             }
         }
         return false
+    }
+    
+    var isPasswordValid: Bool{
+        var haMaiuscolo = false
+        var haNumero = false
+        
+        for carattere in password{
+            if carattere >= "A" && carattere <= "Z"{
+                haMaiuscolo = true
+            }
+            if carattere >= "0" && carattere <= "9"{
+                haNumero = true
+            }
+        }
+        return password.count >= 8 && haNumero && haMaiuscolo
     }
     
     var isFormValid: Bool{
@@ -54,7 +71,7 @@ struct RegistrazioneView: View {
                 Image(systemName: "envelop").foregroundColor(.gray).font(.headline)
                 TextField("email", text: $email)
             }.padding(10)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke( email.isEmpty ?  Color.black : Color.red, lineWidth: 1))
             
             Text("Password")
             HStack{
