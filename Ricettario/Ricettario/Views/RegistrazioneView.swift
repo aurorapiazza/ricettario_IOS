@@ -8,6 +8,19 @@ struct RegistrazioneView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var isPasswordSecured = true
+    
+    var isEmailValid: Bool{
+        for carattere in email{
+            if carattere == "@"{
+                return true
+            }
+        }
+        return false
+    }
+    
+    var isFormValid: Bool{
+        return !nome.isEmpty && !cognome.isEmpty && !username.isEmpty && isEmailValid
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
