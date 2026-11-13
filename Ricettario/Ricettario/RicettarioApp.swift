@@ -7,6 +7,6 @@ struct RicettarioApp: App {
         WindowGroup {
             RootView()
         }
-        .modelContainer(for: [Utente.self])
+        .modelContainer(for: [Utente.self, Preferito.self])
     }
 }

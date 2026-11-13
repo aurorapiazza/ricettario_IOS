@@ -19,6 +19,7 @@ struct RicercaView: View {
     @State private var risultati = [Recipe]()
     @State private var totale = 0
     @State private var haCercato = false
+    @State private var inCaricamento = false
     @State private var errore = false
 
     // Filtri: indici nelle liste qui sopra. tempoMax = 0 significa nessun limite.
@@ -26,6 +27,10 @@ struct RicercaView: View {
     @State private var dietaScelta = 0
     @State private var cucinaScelta = 0
     @State private var tempoMax = 0
+    @State private var ordinamento = 0
+
+    // Ricorda l'ultima ricerca fatta, per non ripeterla (e non consumare quota) se nulla è cambiato
+    @State private var ultimaRicerca = ""
 
     var filtriAttivi: Int {
         var numero = 0
@@ -34,6 +39,11 @@ struct RicercaView: View {
         if cucinaScelta != 0 { numero = numero + 1 }
         if tempoMax != 0 { numero = numero + 1 }
         return numero
+    }
+
+    // Tutti i parametri della ricerca in una stringa sola
+    var ricercaAttuale: String {
+        return "\(cercaTesto)|\(tipoScelto)|\(dietaScelta)|\(cucinaScelta)|\(tempoMax)|\(ordinamento)"
     }
 
     // Spoonacular accetta anche una ricerca senza testo, purché ci sia almeno un filtro
@@ -46,7 +56,9 @@ struct RicercaView: View {
             return
         }
 
+        inCaricamento = true
         errore = false
+        ultimaRicerca = ricercaAttuale
 
         api.searchRecipes(
             testo: cercaTesto,
@@ -54,9 +66,10 @@ struct RicercaView: View {
             dieta: dieteAPI[dietaScelta],
             cucina: cucineAPI[cucinaScelta],
             tempoMax: tempoMax,
-            ordinamento: "popularity",
+            ordinamento: ordinamento == 0 ? "popularity" : "time",
             offset: 0
         ) { (risposta) in
+            self.inCaricamento = false
             self.haCercato = true
 
             if let risposta = risposta {
@@ -114,6 +127,44 @@ struct RicercaView: View {
                     .disabled(!puoCercare)
                 }
 
+                // Due pulsanti al posto del Picker: così la ricerca riparte appena cambi ordinamento
+                HStack {
+                    Text("Ordina:")
+                        .foregroundColor(.gray)
+
+                    Button(action: {
+                        ordinamento = 0
+                        if haCercato {
+                            eseguiRicerca()
+                        }
+                    }) {
+                        Text("Popolarità")
+                            .font(.caption)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .foregroundColor(ordinamento == 0 ? .white : .black)
+                            .background(ordinamento == 0 ? Color.black : Color.white)
+                            .cornerRadius(14)
+                            .overlay(Capsule().stroke(Color.black, lineWidth: 1))
+                    }
+
+                    Button(action: {
+                        ordinamento = 1
+                        if haCercato {
+                            eseguiRicerca()
+                        }
+                    }) {
+                        Text("Più veloci")
+                            .font(.caption)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .foregroundColor(ordinamento == 1 ? .white : .black)
+                            .background(ordinamento == 1 ? Color.black : Color.white)
+                            .cornerRadius(14)
+                            .overlay(Capsule().stroke(Color.black, lineWidth: 1))
+                    }
+                }
+
                 if filtriAttivi > 0 {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
@@ -132,6 +183,11 @@ struct RicercaView: View {
                         }
                         .padding(1)
                     }
+                }
+
+                if inCaricamento {
+                    Text("Ricerca in corso...")
+                        .foregroundColor(.gray)
                 }
 
                 if errore {
@@ -156,6 +212,14 @@ struct RicercaView: View {
 
             }
             .padding()
+        }
+        .onAppear {
+            // Scatta anche tornando dalla pagina Filtri: se qualcosa è cambiato, si ricerca da soli
+            if puoCercare && haCercato && ricercaAttuale != ultimaRicerca {
+                eseguiRicerca()
+            } else if !haCercato && filtriAttivi > 0 {
+                eseguiRicerca()
+            }
         }
     }
 }
