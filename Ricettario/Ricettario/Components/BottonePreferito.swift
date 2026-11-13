@@ -6,6 +6,7 @@ struct BottonePreferito: View {
     var recipe: Recipe
     var dimensione: CGFloat = 20
     
+    @Environment(\.modelContext) private var context
     @Query var preferiti: [Preferito]
     @AppStorage("usernameLoggato") private var usernameLoggato = ""
     
@@ -34,4 +35,17 @@ struct BottonePreferito: View {
                 .foregroundColor(isPreferito ? Color.red : Color.primary)
         }
     }
+    
+    func cambiaPreferito() {
+        if let prefertio = preferitoSalvato {
+            prefertio.attivo.toggle()
+        } else {
+            let nuovoPreferito = Preferito(
+                usernameUtente: usernameLoggato, ricettaId: recipe.id, titolo: recipe.title, immagine: recipe.image, minuti: recipe.readyInMinutes
+            )
+            context.insert(nuovoPreferito)
+        }
+        try? context.save()
+    }
+    
 }
