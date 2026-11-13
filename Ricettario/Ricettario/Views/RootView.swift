@@ -9,9 +9,9 @@ struct RootView: View {
         if usernameLoggato != "" {
             MainTabView()
         } else if mostraRegistrazione {
-            RegistrazioneView()
+            RegistrazioneView(mostraRegistrazione: $mostraRegistrazione)
         } else {
-            LoginView()
+            LoginView(mostraRegistrazione: $mostraRegistrazione)
         }
     }
 }
