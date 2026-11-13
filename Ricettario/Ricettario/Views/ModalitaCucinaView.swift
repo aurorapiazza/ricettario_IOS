@@ -47,6 +47,38 @@ struct ModalitaCucinaView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 30)
                 }
+                
+                HStack {
+                    Button(action: {
+                        if passaggioCorrente > 0 {
+                            passaggioCorrente = passaggioCorrente - 1
+                        }
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .foregroundColor(passaggioCorrente == 0 ? .gray : .black)
+                            .padding(16)
+                            .overlay(Circle()
+                                .stroke(passaggioCorrente == 0 ? Color.gray : Color.black, lineWidth: 1))
+                    }
+                    .disabled(passaggioCorrente == 0)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        if passaggioCorrente < passaggi.count - 1 {
+                            passaggioCorrente = passaggioCorrente + 1
+                        }
+                    }) {
+                        Image(systemName: "arrow.right")
+                            .foregroundColor(passaggioCorrente == passaggi.count - 1 ? .gray : .black)
+                            .padding(16)
+                            .overlay(Circle()
+                                .stroke(passaggioCorrente == passaggi.count - 1 ? Color.gray : Color.black, lineWidth: 1))
+                    }
+                    .disabled(passaggioCorrente == passaggi.count - 1)
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
             }
         }
     }
