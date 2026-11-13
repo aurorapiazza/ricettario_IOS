@@ -6,6 +6,17 @@ struct DettaglioRicettaView: View{
     @StateObject private var api = Api()
     @State private var dettaglio: RecipeDetail?
     
+    var ingredienti: [RecipeDetail.Ingredient]{
+        return dettaglio?.extendedIngredients ?? []
+    }
+    
+    func quantita(_ ingrediente: RecipeDetail.Ingredient) -> String{
+        if let metrico = ingrediente.measures?.metric {
+            return "\(metrico.amount.formatted()) \(metrico.unitShort)"
+        }
+        return "\(ingrediente.amount.formatted()) \(ingrediente.unit)"
+    }
+    
     var body: some View{
         ScrollView{
             VStack(alignment: .leading, spacing: 16){
@@ -44,6 +55,20 @@ struct DettaglioRicettaView: View{
                 if dettaglio == nil {
                     Text("Caricamento della riceta...")
                         .foregroundColor(.gray)
+                }
+                
+                Text("Ingredienti")
+                    .font(.title2)
+                    .bold()
+                
+                ForEach(0..<ingredienti.count, id: \.self){ indice in
+                    HStack{
+                        Text(ingredienti[indice].name)
+                        Spacer()
+                        Text(quantita(ingredienti[indice]))
+                            .foregroundColor(.gray)
+                    }
+                    Divider()
                 }
             }
             .padding()
