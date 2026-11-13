@@ -17,6 +17,7 @@ struct FiltriPag: View {
     @Binding var tipoScelto: Int
     @Binding var dietaScelta: Int
     @Binding var cucinaScelta: Int
+    @Binding var tempoMax: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -55,6 +56,29 @@ struct FiltriPag: View {
             }
 
             Divider()
+
+            Stepper(tempoMax == 0 ? "Tempo massimo: nessun limite" : "Tempo massimo: \(tempoMax) min",
+                    onIncrement: {
+                        if tempoMax < 180 {
+                            tempoMax = tempoMax + 15
+                        }
+                    }, onDecrement: {
+                        if tempoMax > 0 {
+                            tempoMax = tempoMax - 15
+                        }
+                    })
+
+            Divider()
+
+            Button(action: {
+                tipoScelto = 0
+                dietaScelta = 0
+                cucinaScelta = 0
+                tempoMax = 0
+            }) {
+                Text("Azzera filtri")
+                    .foregroundColor(.red)
+            }
 
             Text("Torna indietro: la ricerca si aggiorna da sola con i nuovi filtri.")
                 .font(.caption)
