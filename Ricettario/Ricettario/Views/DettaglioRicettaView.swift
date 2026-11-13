@@ -5,6 +5,7 @@ struct DettaglioRicettaView: View{
     
     @StateObject private var api = Api()
     @State private var dettaglio: RecipeDetail?
+    @State private var porzioni: Double=4
     
     var ingredienti: [RecipeDetail.Ingredient]{
         return dettaglio?.extendedIngredients ?? []
@@ -20,10 +21,16 @@ struct DettaglioRicettaView: View{
     }
     
     func quantita(_ ingrediente: RecipeDetail.Ingredient) -> String{
-        if let metrico = ingrediente.measures?.metric {
-            return "\(metrico.amount.formatted()) \(metrico.unitShort)"
+        let porzioniOriginali = dettaglio?.servings ?? porzioni
+        var valore = ingrediente.amount
+        var unita = ingrediente.unit
+        
+        if let metrico = ingrediente.measures?.metric{
+            valore = metrico.amount
+            unita = metrico.unitShort
         }
-        return "\(ingrediente.amount.formatted()) \(ingrediente.unit)"
+        valore = valore * porzioni / porzioniOriginali
+        return "\(valore.formatted()) \(unita)"
     }
     
     var body: some View{
@@ -44,6 +51,11 @@ struct DettaglioRicettaView: View{
                     
                     HStack{
                         Text("\(recipe.readyInMinutes ?? 0) min")
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.white)
+                            .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
+                        Text("\(porzioni.formatted()) porz.")
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(Color.white)
@@ -69,6 +81,8 @@ struct DettaglioRicettaView: View{
                 Text("Ingredienti")
                     .font(.title2)
                     .bold()
+                
+                Stepper("Porzioni: \(porzioni.formatted())", value: $porzioni, in: 1...12)
                 
                 ForEach(0..<ingredienti.count, id: \.self){ indice in
                     HStack{
@@ -134,6 +148,7 @@ struct DettaglioRicettaView: View{
                 api.loadRecipeDetail(id: recipe.id){
                     (ricetta) in
                     self.dettaglio = ricetta
+                    self.porzioni = ricetta.servings ?? 4
                 }
             }
         }
