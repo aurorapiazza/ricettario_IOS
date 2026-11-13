@@ -3,6 +3,10 @@ import SwiftUI
 struct RegistrazioneView: View {
     @State private var nome = ""
     @State private var cognome = ""
+    @State private var username = ""
+    @State private var email = ""
+    @State private var password = ""
+    @State private var isPasswordSecured = true
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -23,6 +27,37 @@ struct RegistrazioneView: View {
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
                 }
             }
+            
+            Text("Username")
+            HStack{
+                Image(systemName: "person")
+                TextField("username", text: $username)
+            }.padding(10)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
+            
+            Text("Email")
+            HStack{
+                Image(systemName: "envelop").foregroundColor(.gray).font(.headline)
+                TextField("email", text: $email)
+            }.padding(10)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
+            
+            Text("Password")
+            HStack{
+                if isPasswordSecured{
+                    SecureField("password", text: $password)
+                }else{
+                    TextField("password", text: $password)
+                }
+                Button(action: {
+                    isPasswordSecured.toggle()
+                }){
+                    Image(systemName: isPasswordSecured ? "eye.slash" : "eye").foregroundColor(.gray)
+                }
+            }.padding(10)
+                .overlay(RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.black, lineWidth: 1))
+            Text("Almeno 8 caratteri con una lettera maiuscola e un numero").font(.caption).foregroundColor(.gray)
 
         }
         .padding()
