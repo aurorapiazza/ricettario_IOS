@@ -42,3 +42,26 @@ struct RecipeDetail: Codable{
     }
 
 }
+
+
+struct AnalyzedInstruction: Codable {
+    let name: String
+    let steps: [RecipeStep]
+}
+
+struct RecipeStep: Codable {
+    let number: Int
+    let step: String
+    let ingredients: [RecipeIngredient]
+    let length: StepLength?
+}
+
+struct RecipeIngredient: Codable {
+    let id: Int
+    let name: String
+}
+
+struct StepLength: Codable {
+    let number: Int
+    let unit: String
+}
