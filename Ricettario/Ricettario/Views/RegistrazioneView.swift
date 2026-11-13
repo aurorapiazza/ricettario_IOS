@@ -1,12 +1,26 @@
 import SwiftUI
 
 struct RegistrazioneView: View {
+    @Binding var mostraRegistrazione: Bool
     @State private var nome = ""
     @State private var cognome = ""
     @State private var username = ""
     @State private var email = ""
     @State private var password = ""
     @State private var isPasswordSecured = true
+    
+    var isEmailValid: Bool{
+        for carattere in email{
+            if carattere == "@"{
+                return true
+            }
+        }
+        return false
+    }
+    
+    var isFormValid: Bool{
+        return !nome.isEmpty && !cognome.isEmpty && !username.isEmpty && isEmailValid
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -59,6 +73,25 @@ struct RegistrazioneView: View {
                     .stroke(Color.black, lineWidth: 1))
             Text("Almeno 8 caratteri con una lettera maiuscola e un numero").font(.caption).foregroundColor(.gray)
 
+            Button(action:{
+                
+            }){
+                Text("Registrati").bold().frame(maxWidth: .infinity).padding().background(Color.black).foregroundColor(.white).cornerRadius(12)
+            }
+            
+            Spacer()
+            
+            HStack{
+                Spacer()
+                Text("Hai già un account?")
+                Button(action: {
+                    mostraRegistrazione = false
+                }){
+                    Text("Accedi").bold().foregroundColor(.black)
+                }
+                Spacer()
+            }
+            
         }
         .padding()
     }
