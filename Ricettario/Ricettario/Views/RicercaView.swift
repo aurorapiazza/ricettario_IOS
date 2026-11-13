@@ -51,7 +51,7 @@ struct RicercaView: View {
         return cercaTesto != "" || filtriAttivi > 0
     }
 
-    func eseguiRicerca() {
+    func eseguiRicerca(offset: Int) {
         if !puoCercare {
             return
         }
@@ -67,13 +67,19 @@ struct RicercaView: View {
             cucina: cucineAPI[cucinaScelta],
             tempoMax: tempoMax,
             ordinamento: ordinamento == 0 ? "popularity" : "time",
-            offset: 0
+            offset: offset
         ) { (risposta) in
             self.inCaricamento = false
             self.haCercato = true
 
             if let risposta = risposta {
-                self.risultati = risposta.results
+                if offset == 0 {
+                    self.risultati = risposta.results
+                } else {
+                    for ricetta in risposta.results {
+                        self.risultati.append(ricetta)
+                    }
+                }
                 self.totale = risposta.totalResults ?? self.risultati.count
             } else {
                 self.errore = true
@@ -113,7 +119,7 @@ struct RicercaView: View {
                     }
 
                     Button(action: {
-                        eseguiRicerca()
+                        eseguiRicerca(offset: 0)
                     }) {
                         Image(systemName: "magnifyingglass")
                             .font(.system(size: 18))
@@ -135,7 +141,7 @@ struct RicercaView: View {
                     Button(action: {
                         ordinamento = 0
                         if haCercato {
-                            eseguiRicerca()
+                            eseguiRicerca(offset: 0)
                         }
                     }) {
                         Text("Popolarità")
@@ -151,7 +157,7 @@ struct RicercaView: View {
                     Button(action: {
                         ordinamento = 1
                         if haCercato {
-                            eseguiRicerca()
+                            eseguiRicerca(offset: 0)
                         }
                     }) {
                         Text("Più veloci")
@@ -209,6 +215,22 @@ struct RicercaView: View {
                 ForEach(risultati) { ricetta in
                     InfoRicetta(recipe: ricetta)
                 }
+                
+                if risultati.count < totale && !inCaricamento{
+                    Button(action: {
+                        eseguiRicerca(offset: risultati.count)
+                    }){
+                        Text("Mostra altre ricette")
+                            .bold()
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .foregroundColor(.black)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .stroke(Color.black, lineWidth: 1.5)
+                            )
+                    }
+                }
 
             }
             .padding()
@@ -216,9 +238,9 @@ struct RicercaView: View {
         .onAppear {
             // Scatta anche tornando dalla pagina Filtri: se qualcosa è cambiato, si ricerca da soli
             if puoCercare && haCercato && ricercaAttuale != ultimaRicerca {
-                eseguiRicerca()
+                eseguiRicerca(offset: 0)
             } else if !haCercato && filtriAttivi > 0 {
-                eseguiRicerca()
+                eseguiRicerca(offset: 0)
             }
         }
     }
