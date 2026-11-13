@@ -13,6 +13,50 @@ let cucineAPI = ["", "italian", "mediterranean", "french", "spanish", "greek", "
 let cucineNomi = ["Tutte", "Italiana", "Mediterranea", "Francese", "Spagnola", "Greca", "Americana",
                   "Messicana", "Indiana", "Cinese", "Giapponese", "Thailandese", "Mediorientale"]
 
+struct RicercaView: View {
+    @State private var cercaTesto = ""
+
+    // Si può cercare solo dopo aver scritto qualcosa
+    var puoCercare: Bool {
+        return cercaTesto != ""
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                        TextField("Cerca in inglese, es. pasta", text: $cercaTesto)
+                    }
+                    .padding(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: 1.5)
+                    )
+
+                    Button(action: {
+                        // TODO: cercare le ricette con l'API
+                    }) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 18))
+                            .foregroundColor(puoCercare ? .black : .gray)
+                            .frame(width: 44, height: 44)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.gray.opacity(0.8), lineWidth: 1.5)
+                            )
+                    }
+                    .disabled(!puoCercare)
+                }
+
+            }
+            .padding()
+        }
+    }
+}
+
 struct FiltriPag: View {
     @Binding var tipoScelto: Int
     @Binding var dietaScelta: Int

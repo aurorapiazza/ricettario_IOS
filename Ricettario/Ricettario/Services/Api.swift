@@ -82,5 +82,60 @@ class Api: ObservableObject {
             }
         }.resume()
     }
+    func searchRecipes(testo: String, tipo: String, dieta: String, cucina: String, tempoMax: Int,
+                       ordinamento: String, offset: Int, completion: @escaping (RecipeResponse?) -> ()) {
+        var urlString = "\(baseURL)/complexSearch?number=12&offset=\(offset)&addRecipeInformation=true&apiKey=\(Secrets.spoonacularKey)"
+
+        if testo != "" {
+            urlString = urlString + "&query=\(testo)"
+        }
+        if tipo != "" {
+            urlString = urlString + "&type=\(tipo)"
+        }
+        if dieta != "" {
+            urlString = urlString + "&diet=\(dieta)"
+        }
+        if cucina != "" {
+            urlString = urlString + "&cuisine=\(cucina)"
+        }
+        if tempoMax > 0 {
+            urlString = urlString + "&maxReadyTime=\(tempoMax)"
+        }
+
+        if ordinamento == "time" {
+            urlString = urlString + "&sort=time&sortDirection=asc"
+        } else {
+            urlString = urlString + "&sort=popularity&sortDirection=desc"
+        }
+
+        guard let url = URL(string: urlString) else {
+            print("URL non valido")
+            completion(nil)
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                print("Errore di rete")
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+                return
+            }
+
+            do {
+                let decodedResponse = try JSONDecoder().decode(RecipeResponse.self, from: data)
+
+                DispatchQueue.main.async {
+                    completion(decodedResponse)
+                }
+            } catch {
+                print(error)
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+            }
+        }.resume()
+    }
 }
 
