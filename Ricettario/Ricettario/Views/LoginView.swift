@@ -3,6 +3,8 @@ import SwiftUI
 
 struct LoginView: View {
     @State private var username: String = ""
+    @State private var password: String = ""
+    @State private var isPasswordVisible: Bool = false
     
     var body: some View {
         VStack(spacing: 30) {
@@ -32,6 +34,32 @@ struct LoginView: View {
                             .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                     )
                 }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Password")
+                        .font(.system(size: 16, weight: .bold))
+                    
+                    HStack {
+                        if isPasswordVisible {
+                            TextField("Password", text: $password)
+                        } else {
+                            SecureField("Password", text: $password)
+                        }
+                        
+                        Button(action: {
+                            isPasswordVisible.toggle()
+                        }) {
+                            Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                                .foregroundColor(.black)
+                        }
+                    }
+                    .padding()
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                    )
+                }
+                
             }
             
             .padding(.horizontal, 24)
