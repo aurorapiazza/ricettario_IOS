@@ -30,6 +30,15 @@ struct ModalitaCucinaView: View {
                 let stepAttuale = passaggi[passaggioCorrente]
                 
                 VStack(alignment: .leading, spacing: 12) {
+                    HStack(spacing: 6) {
+                        ForEach(0..<passaggi.count, id: \.self) {
+                            index in
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(index <= passaggioCorrente ? Color.black : Color.gray.opacity(0.2))
+                                .frame(height: 4)
+                        }
+                    }
+                    
                     Text("PASSAGGIO \(passaggioCorrente + 1) DI \(passaggi.count)")
                         .font(.system(size: 12, weight: .bold))
                         .foregroundColor(.gray)
@@ -43,6 +52,21 @@ struct ModalitaCucinaView: View {
                             .font(.system(size: 32, weight: .bold))
                         Text(stepAttuale.step)
                             .font(.system(size: 20))
+                        
+                        HStack(spacing: 8) {
+                            Image(systemName: "clock")
+                            if let durata = stepAttuale.length {
+                                Text("Passaggio \(durata.number) \(durata.unit)")
+                                    .font(.system(size: 14, weight: .bold))
+                            } else {
+                                Text("Tempo totale \(tempoTotale) min")
+                                    .font(.system(size: 14, weight: .bold))
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .overlay(Capsule()
+                            .stroke(Color.gray.opacity(0.4), lineWidth: 1))
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 30)
