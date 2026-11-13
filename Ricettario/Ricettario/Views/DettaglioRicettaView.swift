@@ -108,6 +108,23 @@ struct DettaglioRicettaView: View{
                         }
                     }
                 }
+                NavigationLink(destination: ModalitaCucinaView(
+                    nomeRicetta: recipe.title,
+                    passaggi: passaggi,
+                    ingredienti: ingredienti,
+                    tempoTotale: recipe.readyInMinutes ?? 0
+                )) {
+                    HStack {
+                        Image(systemName: "timer")
+                        Text("Avvia Modalità Cucina").bold()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .foregroundColor(.white)
+                    .background(passaggi.isEmpty ? Color.gray : Color.black)
+                    .cornerRadius(14)
+                }
+                .disabled(passaggi.isEmpty)
             }
             .padding()
             
