@@ -1,13 +1,18 @@
 import SwiftUI
+import _SwiftData_SwiftUI
 
 struct RegistrazioneView: View {
     @Binding var mostraRegistrazione: Bool
+    @Environment(\.modelContext) private var context
+    @Query var utenti: [Utente]
+    
     @State private var nome = ""
     @State private var cognome = ""
     @State private var username = ""
     @State private var email = ""
     @State private var password = ""
     @State private var isPasswordSecured = true
+    @State private var messaggioErrore = ""
     
     
     
@@ -36,8 +41,7 @@ struct RegistrazioneView: View {
     }
     
     var isFormValid: Bool{
-        return !nome.isEmpty && !cognome.isEmpty && !username.isEmpty && isEmailValid
-    }
+        return !nome.isEmpty && !cognome.isEmpty && !username.isEmpty && isEmailValid && isPasswordValid    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -89,12 +93,16 @@ struct RegistrazioneView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.black, lineWidth: 1))
             Text("Almeno 8 caratteri con una lettera maiuscola e un numero").font(.caption).foregroundColor(.gray)
+            
+            if !messaggioErrore.isEmpty{
+                Text(messaggioErrore).foregroundColor(.red)
+            }
 
             Button(action:{
-                
+                registra()
             }){
                 Text("Registrati").bold().frame(maxWidth: .infinity).padding().background(Color.black).foregroundColor(.white).cornerRadius(12)
-            }
+            }.disabled(!isFormValid)
             
             Spacer()
             
@@ -111,5 +119,31 @@ struct RegistrazioneView: View {
             
         }
         .padding()
+    }
+    
+    func registra(){
+        for utente in utenti{
+            if  utente.username == username{
+                messaggioErrore = "Questo username è già in uso"
+                return
+            }
+            if utente.email == email{
+                messaggioErrore = "Questa email è già registrata"
+                return
+            }
+        }
+        
+        let nuovoUtente = Utente(
+            nome: nome,
+            cognome: cognome,
+            username: username,
+            email: email,
+            password: password
+        )
+        
+        context.insert(nuovoUtente)
+        try? context.save()
+        
+        mostraRegistrazione = false
     }
 }
