@@ -27,9 +27,18 @@ struct RicercaView: View {
     @State private var cucinaScelta = 0
     @State private var tempoMax = 0
 
-    // Si può cercare solo dopo aver scritto qualcosa
+    var filtriAttivi: Int {
+        var numero = 0
+        if tipoScelto != 0 { numero = numero + 1 }
+        if dietaScelta != 0 { numero = numero + 1 }
+        if cucinaScelta != 0 { numero = numero + 1 }
+        if tempoMax != 0 { numero = numero + 1 }
+        return numero
+    }
+
+    // Spoonacular accetta anche una ricerca senza testo, purché ci sia almeno un filtro
     var puoCercare: Bool {
-        return cercaTesto != ""
+        return cercaTesto != "" || filtriAttivi > 0
     }
 
     func eseguiRicerca() {
@@ -41,10 +50,10 @@ struct RicercaView: View {
 
         api.searchRecipes(
             testo: cercaTesto,
-            tipo: "",
-            dieta: "",
-            cucina: "",
-            tempoMax: 0,
+            tipo: tipiAPI[tipoScelto],
+            dieta: dieteAPI[dietaScelta],
+            cucina: cucineAPI[cucinaScelta],
+            tempoMax: tempoMax,
             ordinamento: "popularity",
             offset: 0
         ) { (risposta) in
@@ -82,11 +91,11 @@ struct RicercaView: View {
                     )) {
                         Image(systemName: "line.3.horizontal.decrease")
                             .font(.system(size: 18))
-                            .foregroundColor(.gray)
+                            .foregroundColor(filtriAttivi == 0 ? .gray : .black)
                             .frame(width: 44, height: 44)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.gray, lineWidth: 1.5)
+                                    .stroke(filtriAttivi == 0 ? Color.gray : Color.black, lineWidth: 1.5)
                             )
                     }
 
@@ -105,6 +114,26 @@ struct RicercaView: View {
                     .disabled(!puoCercare)
                 }
 
+                if filtriAttivi > 0 {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            if tipoScelto != 0 {
+                                EtichettaFiltro(testo: tipiNomi[tipoScelto])
+                            }
+                            if dietaScelta != 0 {
+                                EtichettaFiltro(testo: dieteNomi[dietaScelta])
+                            }
+                            if cucinaScelta != 0 {
+                                EtichettaFiltro(testo: "Cucina: " + cucineNomi[cucinaScelta])
+                            }
+                            if tempoMax != 0 {
+                                EtichettaFiltro(testo: "Max \(tempoMax) min")
+                            }
+                        }
+                        .padding(1)
+                    }
+                }
+
                 if errore {
                     Text("Ricerca non riuscita. Controlla la connessione: se il problema resta, la quota giornaliera di Spoonacular potrebbe essere finita.")
                         .foregroundColor(.red)
@@ -116,7 +145,7 @@ struct RicercaView: View {
                 }
 
                 if haCercato && !errore && risultati.isEmpty {
-                    Text("Nessuna ricetta trovata. Prova con una parola in inglese.")
+                    Text("Nessuna ricetta trovata. Prova con una parola in inglese o con meno filtri.")
                         .foregroundColor(.gray)
                         .frame(maxWidth: .infinity)
                 }
@@ -128,6 +157,18 @@ struct RicercaView: View {
             }
             .padding()
         }
+    }
+}
+
+struct EtichettaFiltro: View {
+    var testo: String
+
+    var body: some View {
+        Text(testo)
+            .font(.caption)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
     }
 }
 

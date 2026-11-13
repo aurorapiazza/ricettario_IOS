@@ -1,12 +1,16 @@
 
 import SwiftUI
+import SwiftData
 
 struct LoginView: View {
     @Binding var mostraRegistrazione: Bool
+    @Query var utenti: [Utente]
+    @AppStorage("usernameLoggato") private var usernameLoggato = ""
     
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var isPasswordVisible: Bool = false
+    @State private var mostraErrore: Bool =  false
     
     var body: some View {
         VStack(spacing: 30) {
@@ -66,8 +70,13 @@ struct LoginView: View {
             
             .padding(.horizontal, 24)
             
+            if mostraErrore {
+                Text("Username o password non sono corretti.")
+                    .foregroundColor(.red)
+            }
+            
             Button(action: {
-                
+                accedi()
             }) {
                 Text("Accedi")
                     .font(.system(size:18, weight: .bold))
@@ -95,5 +104,15 @@ struct LoginView: View {
             }
             .padding(.bottom, 20)
         }
+    }
+    
+    func accedi() {
+        for utente in utenti {
+            if utente.username == username && utente.password == password {
+                usernameLoggato = utente.username
+                return
+            }
+        }
+        mostraErrore = true
     }
 }
