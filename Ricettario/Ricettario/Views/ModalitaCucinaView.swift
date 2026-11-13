@@ -9,6 +9,17 @@ struct ModalitaCucinaView: View {
     
     @State private var passaggioCorrente = 0
     
+    func etichetta(_ ingrediente: RecipeIngredient) -> String {
+        for completo in ingredienti {
+            if completo.id == ingrediente.id {
+                if let metrico = completo.measures?.metric {
+                    return "\(ingrediente.name) \(metrico.amount.formatted()) \(metrico.unitShort)"
+                }
+            }
+        }
+        return ingrediente.name
+    }
+    
     var body: some View {
         VStack (alignment: .leading, spacing: 0) {
             VStack(spacing: 2) {
@@ -67,6 +78,27 @@ struct ModalitaCucinaView: View {
                         .padding(.vertical, 10)
                         .overlay(Capsule()
                             .stroke(Color.gray.opacity(0.4), lineWidth: 1))
+                        
+                        if !stepAttuale.ingredients.isEmpty {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Ingredienti per questo passaggio")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .foregroundColor(.gray)
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 12) {
+                                        ForEach(0..<stepAttuale.ingredients.count, id: \.self) {
+                                            indice in Text(etichetta(stepAttuale.ingredients[indice]))
+                                                .font(.system(size: 14))
+                                                .padding(.horizontal, 16)
+                                                .padding(.vertical, 10)
+                                                .overlay(Capsule().stroke( Color.gray.opacity(0.4), lineWidth: 1))
+                                        }
+                                    }
+                                    .padding(1)
+                                }
+                            }
+                            .padding(.top, 10)
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 30)
