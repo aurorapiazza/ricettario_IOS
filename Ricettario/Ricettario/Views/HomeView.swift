@@ -20,12 +20,39 @@ struct HomeView: View {
         return (recipes.count + 1) / 2
     }
 
+    func caricaRicette() {
+        erroreCaricamento = false
+        api.loadRecipesData { (nuoveRicette) in
+            if let nuoveRicette = nuoveRicette {
+                self.recipes = nuoveRicette
+            } else {
+                self.erroreCaricamento = true
+            }
+        }
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 Text(userName.isEmpty ? "Buongiorno" : "Buongiorno, \(userName)")
                     .font(.largeTitle)
                     .foregroundColor(.gray)
+
+                if erroreCaricamento {
+                    VStack(alignment: .leading, spacing: 10){
+                        Text("Non è stato possibile caricare le 
+                        ricette. Controlla la connessione: se il 
+                        problema resta, la quota giornaliera di 
+                        Spoonacular potrebbe essere finita.")
+                        .foregroundColor(.red)
+
+                        Button(action: {caricaRicette()}){
+                            Text("Riprova")
+                            .bold()
+                            .foregroundColor(coloreApp)
+                        }
+                    }
+                }
 
                 if let featured = api.featuredRecipe {
                     FeaturedRecipeCard(
@@ -61,9 +88,7 @@ struct HomeView: View {
         }
         .onAppear {
             if recipes.isEmpty {
-                api.loadRecipesData { (recipes) in
-                    self.recipes = recipes
-                }
+                caricaRicette()
             }
             if api.featuredRecipe == nil {
                 api.loadRandomRecipe()
