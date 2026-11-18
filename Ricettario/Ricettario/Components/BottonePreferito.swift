@@ -28,7 +28,7 @@ struct BottonePreferito: View {
     
     var body: some View {
         Button(action: {
-            
+            cambiaPreferito()
         }) {
             Image(systemName: isPreferito ? "heart.fill" : "heart")
                 .font(.system(size: dimensione))
@@ -37,8 +37,8 @@ struct BottonePreferito: View {
     }
     
     func cambiaPreferito() {
-        if let prefertio = preferitoSalvato {
-            prefertio.attivo.toggle()
+        if let preferito = preferitoSalvato {
+            preferito.attivo.toggle()
         } else {
             let nuovoPreferito = Preferito(
                 usernameUtente: usernameLoggato, ricettaId: recipe.id, titolo: recipe.title, immagine: recipe.image, minuti: recipe.readyInMinutes

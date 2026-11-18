@@ -4,6 +4,7 @@ import SwiftData
 struct HomeView: View {
     @StateObject private var api = Api()
     @State private var recipes = [Recipe]()
+    @State private var erroreCaricamento = false
     @Query var utenti: [Utente]
     @AppStorage("usernameLoggato") private var usernameLoggato = ""
 
@@ -36,7 +37,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 20) {
                 Text(userName.isEmpty ? "Buongiorno" : "Buongiorno, \(userName)")
                     .font(.largeTitle)
-                    .foregroundColor(.gray)
+                    .bold()
 
                 if erroreCaricamento {
                     VStack(alignment: .leading, spacing: 10){
