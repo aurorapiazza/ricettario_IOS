@@ -16,6 +16,12 @@ class Api: ObservableObject {
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 print("Errore di rete")
+                if let error = error {
+                    print(error)
+                }
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
                 return
             }
 
@@ -27,6 +33,9 @@ class Api: ObservableObject {
                 }
             } catch {
                 print(error)
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
             }
         }.resume()
     }
