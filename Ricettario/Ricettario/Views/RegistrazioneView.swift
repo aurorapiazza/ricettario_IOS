@@ -39,6 +39,25 @@ struct RegistrazioneView: View {
         return password.count >= 8 && haMaiuscola && haNumero
     }
 
+    let maiuscole = ["A","B", "C","D","E","F","G","H","I","J","K","L","M","N",
+                     "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+    let minuscole = ["a","b", "c","d","e","f","g","h","i","j","k","l","m","n",
+                     "n","o","p","q","r","s","t","u","v","w","x","y","z"]
+
+    func inMinuscolo(_testo: String) -> String {
+        var risultato = ""
+        for carattere in testo{
+            var nuovo = "\(carattere)"
+            for indice in 0..<maiuscole.count{
+                if nuovo == maiuscole[indice]{
+                    nuovo = minuscole[indice]
+                }
+             }
+             risultato = risultato + nuovo
+        }
+        return risultato
+    }
+
     var isFormValid: Bool {
         return !nome.isEmpty && !cognome.isEmpty && !username.isEmpty && isEmailValid && isPasswordValid
     }
@@ -132,12 +151,14 @@ struct RegistrazioneView: View {
     }
 
     func registra() {
+        let emailMinuscola = inMinuscolo(email)
+
         for utente in utenti {
             if utente.username == username {
                 messaggioErrore = "Questo username è già in uso."
                 return
             }
-            if utente.email == email {
+            if utente.email == emailMinuscola {
                 messaggioErrore = "Questa email è già registrata."
                 return
             }
