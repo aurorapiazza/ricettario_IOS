@@ -110,10 +110,10 @@ struct RicercaView: View {
                             }
                         }
                     }
-                    .padding(10)
+                    .padding(12)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.black, lineWidth: 1.5)
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray.opacity(0.4), lineWidth: 1)
                     )
 
                     NavigationLink(destination: FiltriPag(
@@ -124,11 +124,11 @@ struct RicercaView: View {
                     )) {
                         Image(systemName: "line.3.horizontal.decrease")
                             .font(.system(size: 18))
-                            .foregroundColor(filtriAttivi == 0 ? .gray : .black)
+                            .foregroundColor(filtriAttivi == 0 ? .gray : coloreApp)
                             .frame(width: 44, height: 44)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(filtriAttivi == 0 ? Color.gray : Color.black, lineWidth: 1.5)
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(filtriAttivi == 0 ? Color.gray.opacity(0.4) : coloreApp, lineWidth: 1)
                             )
                     }
 
@@ -137,12 +137,10 @@ struct RicercaView: View {
                     }) {
                         Image(systemName: "magnifyingglass")
                             .font(.system(size: 18))
-                            .foregroundColor(puoCercare ? .black : .gray)
+                            .foregroundColor(.white)
                             .frame(width: 44, height: 44)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.gray.opacity(0.8), lineWidth: 1.5)
-                            )
+                            .background(puoCercare ? coloreApp : Color.gray.opacity(0.4))
+                            .cornerRadius(12)
                     }
                     .disabled(!puoCercare)
                 }
@@ -162,9 +160,9 @@ struct RicercaView: View {
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .foregroundColor(ordinamento == 0 ? .white : .black)
-                            .background(ordinamento == 0 ? Color.black : Color.white)
+                            .background(ordinamento == 0 ? coloreApp : Color.white)
                             .cornerRadius(14)
-                            .overlay(Capsule().stroke(Color.black, lineWidth: 1))
+                            .overlay(Capsule().stroke(ordinamento == 0 ? coloreApp : Color.gray.opacity(0.4), lineWidth: 1))
                     }
 
                     Button(action: {
@@ -178,9 +176,9 @@ struct RicercaView: View {
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .foregroundColor(ordinamento == 1 ? .white : .black)
-                            .background(ordinamento == 1 ? Color.black : Color.white)
+                            .background(ordinamento == 1 ? coloreApp : Color.white)
                             .cornerRadius(14)
-                            .overlay(Capsule().stroke(Color.black, lineWidth: 1))
+                            .overlay(Capsule().stroke(ordinamento == 1 ? coloreApp : Color.gray.opacity(0.4), lineWidth: 1))
                     }
                 }
 
@@ -237,10 +235,10 @@ struct RicercaView: View {
                             .bold()
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .foregroundColor(.black)
+                            .foregroundColor(coloreApp)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 14)
-                                    .stroke(Color.black, lineWidth: 1.5)
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(coloreApp, lineWidth: 1)
                             )
                     }
                 }
@@ -265,7 +263,8 @@ struct EtichettaFiltro: View {
             .font(.caption)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
+            .foregroundColor(coloreApp)
+            .overlay(Capsule().stroke(coloreApp, lineWidth: 1))
     }
 }
 
@@ -348,7 +347,7 @@ struct FiltriPag: View {
             Spacer()
         }
         .padding()
-        .accentColor(.black)
+        .accentColor(coloreApp)
         .navigationTitle("Filtri")
     }
 }
