@@ -1,12 +1,10 @@
 import SwiftUI
 
 struct DettaglioRicettaView: View {
-   
     var recipe: Recipe
 
     @StateObject private var api = Api()
     @State private var dettaglio: RecipeDetail?
-    @State private var errore = false
     @State private var porzioni: Double = 4
     @State private var spuntati = [Bool]()
 
@@ -48,23 +46,22 @@ struct DettaglioRicettaView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                         }, placeholder: {
-                            Color.gray.opacity(0.1)
+                            Color.gray.opacity(0.2)
                         })
                     .frame(height: 220)
                     .frame(maxWidth: .infinity)
-                    .background(Color.gray.opacity(0.1))
 
                     HStack {
                         Text("\(recipe.readyInMinutes ?? 0) min")
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(Color.white)
-                            .overlay(Capsule().stroke(Color.gray.opacity(0.4), lineWidth: 1))
+                            .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
                         Text("\(porzioni.formatted()) porz.")
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(Color.white)
-                            .overlay(Capsule().stroke(Color.gray.opacity(0.4), lineWidth: 1))
+                            .overlay(Capsule().stroke(Color.gray, lineWidth: 1))
                         Spacer()
                     }
                     .padding(10)
@@ -78,10 +75,7 @@ struct DettaglioRicettaView: View {
                     BottonePreferito(recipe: recipe, dimensione: 28)
                 }
 
-                if errore {
-                    Text("Non è stato possibile caricare la ricetta. Controlla la connessione: se il problema resta, la quota giornaliera di Spoonacular potrebbe essere finita.")
-                        .foregroundColor(.red)
-                } else if dettaglio == nil {
+                if dettaglio == nil {
                     Text("Caricamento della ricetta...")
                         .foregroundColor(.gray)
                 }
@@ -99,7 +93,7 @@ struct DettaglioRicettaView: View {
                         }) {
                             Image(systemName: spuntati[indice] ? "checkmark.square" : "square")
                                 .font(.system(size: 22))
-                                .foregroundColor(spuntati[indice] ? coloreApp : .gray)
+                                .foregroundColor(.black)
                         }
                         Text(ingredienti[indice].name)
                         Spacer()
@@ -124,7 +118,7 @@ struct DettaglioRicettaView: View {
                             .bold()
                             .foregroundColor(.white)
                             .frame(width: 36, height: 36)
-                            .background(coloreApp)
+                            .background(Color.black)
                             .cornerRadius(18)
 
                         VStack(alignment: .leading, spacing: 4) {
@@ -151,8 +145,8 @@ struct DettaglioRicettaView: View {
                     .frame(maxWidth: .infinity)
                     .padding()
                     .foregroundColor(.white)
-                    .background(passaggi.isEmpty ? Color.gray.opacity(0.4) : coloreApp)
-                    .cornerRadius(12)
+                    .background(passaggi.isEmpty ? Color.gray : Color.black)
+                    .cornerRadius(14)
                 }
                 .disabled(passaggi.isEmpty)
             }
@@ -160,15 +154,10 @@ struct DettaglioRicettaView: View {
         }
         .onAppear {
             if dettaglio == nil {
-                api.loadRecipeDetail(id: recipe.id) { (risposta) in
-                    guard let ricetta = risposta else {
-                        self.errore = true
-                        return
-                    }
+                api.loadRecipeDetail(id: recipe.id) { (ricetta) in
                     self.dettaglio = ricetta
                     self.porzioni = ricetta.servings ?? 4
 
-                    // Una spunta per ogni ingrediente, tutte vuote
                     var nuoveSpunte = [Bool]()
                     for _ in ricetta.extendedIngredients ?? [] {
                         nuoveSpunte.append(false)
@@ -179,4 +168,3 @@ struct DettaglioRicettaView: View {
         }
     }
 }
-

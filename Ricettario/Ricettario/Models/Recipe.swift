@@ -16,7 +16,7 @@ struct RandomRecipeResponse: Codable {
     let recipes: [Recipe]
 }
 
-struct RecipeDetail: Codable{
+struct RecipeDetail: Codable {
     let id: Int
     let title: String
     let image: String?
@@ -24,26 +24,24 @@ struct RecipeDetail: Codable{
     let servings: Double?
     let extendedIngredients: [Ingredient]?
     let analyzedInstructions: [AnalyzedInstruction]?
-    
-    struct Ingredient:Codable{
-        let id: Int?
-        let name: String
-        let amount: Double
-        let unit: String
-        let measures: Measures?
-    }
-    
-    struct Measures:Codable{
-        let metric: Measure
-    }
-    
-    struct Measure: Codable{
-        let amount: Double
-        let unitShort: String
-    }
-
 }
 
+struct Ingredient: Codable {
+    let id: Int?
+    let name: String
+    let amount: Double
+    let unit: String
+    let measures: Measures?
+}
+
+struct Measures: Codable {
+    let metric: Measure
+}
+
+struct Measure: Codable {
+    let amount: Double
+    let unitShort: String
+}
 
 struct AnalyzedInstruction: Codable {
     let name: String
