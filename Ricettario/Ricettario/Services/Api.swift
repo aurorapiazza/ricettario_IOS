@@ -1,15 +1,18 @@
 import SwiftUI
 
+
 class Api: ObservableObject {
     @Published var featuredRecipe: Recipe?
 
     let baseURL = "https://api.spoonacular.com/recipes"
 
-    func loadRecipesData(completion: @escaping ([Recipe]) -> ()) {
+   
+    func loadRecipesData(completion: @escaping ([Recipe]?) -> ()) {
         let urlString = "\(baseURL)/complexSearch?sort=popularity&sortDirection=desc&number=12&addRecipeInformation=true&apiKey=\(Secrets.spoonacularKey)"
 
         guard let url = URL(string: urlString) else {
             print("URL non valido")
+            completion(nil)
             return
         }
 
@@ -40,17 +43,24 @@ class Api: ObservableObject {
         }.resume()
     }
 
-    func loadRecipeDetail(id: Int, completion: @escaping (RecipeDetail) -> ()) {
+    func loadRecipeDetail(id: Int, completion: @escaping (RecipeDetail?) -> ()) {
         let urlString = "\(baseURL)/\(id)/information?apiKey=\(Secrets.spoonacularKey)"
 
         guard let url = URL(string: urlString) else {
             print("URL non valido")
+            completion(nil)
             return
         }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 print("Errore di rete")
+                if let error = error {
+                    print(error)
+                }
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
                 return
             }
 
@@ -62,6 +72,9 @@ class Api: ObservableObject {
                 }
             } catch {
                 print(error)
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
             }
         }.resume()
     }
@@ -91,6 +104,7 @@ class Api: ObservableObject {
             }
         }.resume()
     }
+
     func searchRecipes(testo: String, tipo: String, dieta: String, cucina: String, tempoMax: Int,
                        ordinamento: String, offset: Int, completion: @escaping (RecipeResponse?) -> ()) {
         var urlString = "\(baseURL)/complexSearch?number=12&offset=\(offset)&addRecipeInformation=true&apiKey=\(Secrets.spoonacularKey)"
