@@ -1,12 +1,10 @@
 import SwiftUI
 
-
 class Api: ObservableObject {
     @Published var featuredRecipe: Recipe?
 
     let baseURL = "https://api.spoonacular.com/recipes"
 
-   
     func loadRecipesData(completion: @escaping ([Recipe]?) -> ()) {
         let urlString = "\(baseURL)/complexSearch?sort=popularity&sortDirection=desc&number=12&addRecipeInformation=true&apiKey=\(Secrets.spoonacularKey)"
 
@@ -140,6 +138,9 @@ class Api: ObservableObject {
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 print("Errore di rete")
+                if let error = error {
+                    print(error)
+                }
                 DispatchQueue.main.async {
                     completion(nil)
                 }
@@ -161,4 +162,3 @@ class Api: ObservableObject {
         }.resume()
     }
 }
-
