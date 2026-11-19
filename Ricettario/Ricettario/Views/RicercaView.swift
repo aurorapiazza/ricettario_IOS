@@ -22,14 +22,12 @@ struct RicercaView: View {
     @State private var inCaricamento = false
     @State private var errore = false
 
-    // Filtri: indici nelle liste qui sopra. tempoMax = 0 significa nessun limite.
     @State private var tipoScelto = 0
     @State private var dietaScelta = 0
     @State private var cucinaScelta = 0
     @State private var tempoMax = 0
     @State private var ordinamento = 0
 
-    // Ricorda l'ultima ricerca fatta, per non ripeterla (e non consumare quota) se nulla è cambiato
     @State private var ultimaRicerca = ""
 
     var filtriAttivi: Int {
@@ -41,14 +39,21 @@ struct RicercaView: View {
         return numero
     }
 
-    // Tutti i parametri della ricerca in una stringa sola
     var ricercaAttuale: String {
         return "\(cercaTesto)|\(tipoScelto)|\(dietaScelta)|\(cucinaScelta)|\(tempoMax)|\(ordinamento)"
     }
 
-    // Spoonacular accetta anche una ricerca senza testo, purché ci sia almeno un filtro
     var puoCercare: Bool {
         return cercaTesto != "" || filtriAttivi > 0
+    }
+
+    func annullaRicerca() {
+        cercaTesto = ""
+        risultati = [Recipe]()
+        totale = 0
+        haCercato = false
+        errore = false
+        ultimaRicerca = ""
     }
 
     func eseguiRicerca(offset: Int) {
@@ -95,6 +100,15 @@ struct RicercaView: View {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
                         TextField("Cerca in inglese, es. pasta", text: $cercaTesto)
+
+                        if cercaTesto != "" || haCercato {
+                            Button(action: {
+                                annullaRicerca()
+                            }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
+                            }
+                        }
                     }
                     .padding(10)
                     .overlay(
@@ -133,7 +147,6 @@ struct RicercaView: View {
                     .disabled(!puoCercare)
                 }
 
-                // Due pulsanti al posto del Picker: così la ricerca riparte appena cambi ordinamento
                 HStack {
                     Text("Ordina:")
                         .foregroundColor(.gray)
@@ -215,11 +228,11 @@ struct RicercaView: View {
                 ForEach(risultati) { ricetta in
                     InfoRicetta(recipe: ricetta)
                 }
-                
-                if risultati.count < totale && !inCaricamento{
+
+                if risultati.count < totale && !inCaricamento {
                     Button(action: {
                         eseguiRicerca(offset: risultati.count)
-                    }){
+                    }) {
                         Text("Mostra altre ricette")
                             .bold()
                             .frame(maxWidth: .infinity)
@@ -231,12 +244,10 @@ struct RicercaView: View {
                             )
                     }
                 }
-
             }
             .padding()
         }
         .onAppear {
-            // Scatta anche tornando dalla pagina Filtri: se qualcosa è cambiato, si ricerca da soli
             if puoCercare && haCercato && ricercaAttuale != ultimaRicerca {
                 eseguiRicerca(offset: 0)
             } else if !haCercato && filtriAttivi > 0 {
@@ -266,6 +277,15 @@ struct FiltriPag: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "info.circle")
+                    .foregroundColor(coloreApp)
+                Text("Scegli i filtri che ti interessano, poi torna indietro con la freccia in alto a sinistra: la ricerca si aggiornerà da sola.")
+            }
+            .padding(12)
+            .background(coloreApp.opacity(0.1))
+            .cornerRadius(12)
+
             HStack {
                 Text("Tipo di piatto")
                 Spacer()
@@ -324,10 +344,6 @@ struct FiltriPag: View {
                 Text("Azzera filtri")
                     .foregroundColor(.red)
             }
-
-            Text("Torna indietro: la ricerca si aggiorna da sola con i nuovi filtri.")
-                .font(.caption)
-                .foregroundColor(.gray)
 
             Spacer()
         }
