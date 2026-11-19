@@ -49,13 +49,12 @@ struct ProfiloView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .foregroundColor(.black)
+                .foregroundColor(.red)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color.black, lineWidth: 2)
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.red, lineWidth: 1)
                 )
             }
-
         }
         .padding()
     }
