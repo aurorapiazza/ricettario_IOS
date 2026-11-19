@@ -71,14 +71,14 @@ struct RegistrazioneView: View {
                 VStack(alignment: .leading) {
                     Text("Nome").font(.headline)
                     HStack { TextField("Nome", text: $nome) }
-                        .padding(10)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
+                        .padding(12)
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.4), lineWidth: 1))
                 }
                 VStack(alignment: .leading) {
                     Text("Cognome").font(.headline)
                     HStack { TextField("Cognome", text: $cognome) }
-                        .padding(10)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
+                        .padding(12)
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.4), lineWidth: 1))
                 }
             }
 
@@ -87,17 +87,17 @@ struct RegistrazioneView: View {
                 Image(systemName: "person")
                 TextField("username", text: $username)
             }
-            .padding(10)
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 1))
+            .padding(12)
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.4), lineWidth: 1))
 
             Text("Email")
             HStack {
                 Image(systemName: "envelope").foregroundColor(.gray).font(.headline)
                 TextField("email", text: $email)
             }
-            .padding(10)
-            .overlay(RoundedRectangle(cornerRadius: 8)
-                .stroke(email.isEmpty || isEmailValid ? Color.black : Color.red, lineWidth: 1))
+            .padding(12)
+            .overlay(RoundedRectangle(cornerRadius: 12)
+                .stroke(email.isEmpty || isEmailValid ? Color.gray.opacity(0.4) : Color.red, lineWidth: 1))
 
             Text("Password")
             HStack {
@@ -112,9 +112,9 @@ struct RegistrazioneView: View {
                     Image(systemName: isPasswordSecured ? "eye.slash" : "eye").foregroundColor(.gray)
                 }
             }
-            .padding(10)
-            .overlay(RoundedRectangle(cornerRadius: 8)
-                .stroke(password.isEmpty || isPasswordValid ? Color.black : Color.red, lineWidth: 1))
+            .padding(12)
+            .overlay(RoundedRectangle(cornerRadius: 12)
+                .stroke(password.isEmpty || isPasswordValid ? Color.gray.opacity(0.4) : Color.red, lineWidth: 1))
             Text("Almeno 8 caratteri con una lettera maiuscola e un numero").font(.caption).foregroundColor(.gray)
 
             if !messaggioErrore.isEmpty {
@@ -128,7 +128,7 @@ struct RegistrazioneView: View {
                     .bold()
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(isFormValid ? Color.black : Color.gray)
+                    .background(isFormValid ? coloreApp : Color.gray.opacity(0.4))
                     .foregroundColor(.white)
                     .cornerRadius(12)
             }
@@ -142,7 +142,7 @@ struct RegistrazioneView: View {
                 Button(action: {
                     mostraRegistrazione = false
                 }) {
-                    Text("Accedi").bold().foregroundColor(.black)
+                    Text("Accedi").bold().foregroundColor(coloreApp)
                 }
                 Spacer()
             }
