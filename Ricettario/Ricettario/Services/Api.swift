@@ -1,12 +1,13 @@
 import SwiftUI
 
+
 class Api: ObservableObject {
     @Published var featuredRecipe: Recipe?
 
     let baseURL = "https://api.spoonacular.com/recipes"
 
-    func loadRecipesData(completion: @escaping ([Recipe]?) -> ()) {
-        let urlString = "\(baseURL)/complexSearch?sort=popularity&sortDirection=desc&number=12&addRecipeInformation=true&apiKey=\(Secrets.spoonacularKey)"
+    func loadRecipesData(offset: Int, completion: @escaping ([Recipe]?) -> ()) {
+        let urlString = "\(baseURL)/complexSearch?sort=popularity&sortDirection=desc&number=12&offset=\(offset)&addRecipeInformation=true&apiKey=\(Secrets.spoonacularKey)"
 
         guard let url = URL(string: urlString) else {
             print("URL non valido")

@@ -5,6 +5,7 @@ struct HomeView: View {
     @StateObject private var api = Api()
     @State private var recipes = [Recipe]()
     @State private var erroreCaricamento = false
+    @State private var inCaricamento = false
     @Query var utenti: [Utente]
     @AppStorage("usernameLoggato") private var usernameLoggato = ""
 
@@ -21,11 +22,19 @@ struct HomeView: View {
         return (recipes.count + 1) / 2
     }
 
-    func caricaRicette() {
+    func caricaRicette(offset: Int) {
         erroreCaricamento = false
-        api.loadRecipesData { (nuoveRicette) in
+        inCaricamento = true
+        api.loadRecipesData(offset: offset) { (nuoveRicette) in
+            self.inCaricamento = false
             if let nuoveRicette = nuoveRicette {
-                self.recipes = nuoveRicette
+                if offset == 0 {
+                    self.recipes = nuoveRicette
+                } else {
+                    for ricetta in nuoveRicette {
+                        self.recipes.append(ricetta)
+                    }
+                }
             } else {
                 self.erroreCaricamento = true
             }
@@ -40,17 +49,15 @@ struct HomeView: View {
                     .bold()
 
                 if erroreCaricamento {
-                    VStack(alignment: .leading, spacing: 10){
-                        Text("Non è stato possibile caricare le 
-                        ricette. Controlla la connessione: se il 
-                        problema resta, la quota giornaliera di 
-                        Spoonacular potrebbe essere finita.")
-                        .foregroundColor(.red)
-
-                        Button(action: {caricaRicette()}){
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Non è stato possibile caricare le ricette. Controlla la connessione: se il problema resta, la quota giornaliera di Spoonacular potrebbe essere finita.")
+                            .foregroundColor(.red)
+                        Button(action: {
+                            caricaRicette(offset: recipes.count)
+                        }) {
                             Text("Riprova")
-                            .bold()
-                            .foregroundColor(coloreApp)
+                                .bold()
+                                .foregroundColor(coloreApp)
                         }
                     }
                 }
@@ -84,12 +91,29 @@ struct HomeView: View {
                         }
                     }
                 }
+
+                if !recipes.isEmpty {
+                    Button(action: {
+                        caricaRicette(offset: recipes.count)
+                    }) {
+                        Text(inCaricamento ? "Caricamento..." : "Mostra altre ricette")
+                            .bold()
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .foregroundColor(coloreApp)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(coloreApp, lineWidth: 1)
+                            )
+                    }
+                    .disabled(inCaricamento)
+                }
             }
             .padding()
         }
         .onAppear {
             if recipes.isEmpty {
-                caricaRicette()
+                caricaRicette(offset: 0)
             }
             if api.featuredRecipe == nil {
                 api.loadRandomRecipe()
@@ -97,4 +121,3 @@ struct HomeView: View {
         }
     }
 }
-
