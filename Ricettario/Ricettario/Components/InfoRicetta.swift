@@ -14,10 +14,11 @@ struct InfoRicetta: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                         }, placeholder: {
-                            Color.gray
+                            Color.gray.opacity(0.1)
                         })
                     .frame(width: 100, height: 100)
-                    .mask(RoundedRectangle(cornerRadius: 8))
+                    .background(Color.gray.opacity(0.1))
+                    .mask(RoundedRectangle(cornerRadius: 12))
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(recipe.title)
@@ -32,14 +33,13 @@ struct InfoRicetta: View {
                 }
             }
 
-            BottonePreferito(recipe: recipe, dimensione: 30)
+            BottonePreferito(recipe: recipe, dimensione: 24)
         }
         .padding(12)
         .frame(maxWidth: .infinity)
         .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray, lineWidth: 3)
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
         )
     }
 }
-
