@@ -15,11 +15,12 @@ struct FeaturedRecipeCard: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                     }, placeholder: {
-                        Color.gray.opacity(0.2)
+                        Color.gray.opacity(0.1)
                     })
                 .frame(height: 180)
                 .frame(maxWidth: .infinity)
-                .mask(RoundedRectangle(cornerRadius: 14))
+                .background(Color.gray.opacity(0.1))
+                .mask(RoundedRectangle(cornerRadius: 12))
                 }
 
                 HStack {
@@ -29,7 +30,7 @@ struct FeaturedRecipeCard: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background(Color.orange)
+                        .background(coloreApp)
                         .cornerRadius(20)
 
                     Spacer()
@@ -44,7 +45,6 @@ struct FeaturedRecipeCard: View {
                     }
                 }
                 .padding(10)
-
             }
 
             NavigationLink(destination: DettaglioRicettaView(recipe: recipe)) {
@@ -64,9 +64,8 @@ struct FeaturedRecipeCard: View {
         }
         .padding(12)
         .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1.5)
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(coloreApp.opacity(0.5), lineWidth: 1)
         )
     }
 }
-

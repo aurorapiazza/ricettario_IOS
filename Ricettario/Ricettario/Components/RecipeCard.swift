@@ -14,11 +14,12 @@ struct RecipeCard: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 }, placeholder: {
-                    Color.gray.opacity(0.2)
+                    Color.gray.opacity(0.1)
                 })
             .frame(height: 100)
             .frame(maxWidth: .infinity)
-            .mask(RoundedRectangle(cornerRadius: 10))
+            .background(Color.gray.opacity(0.1))
+            .mask(RoundedRectangle(cornerRadius: 12))
 
             HStack {
                 Text(recipe.title)
@@ -29,7 +30,7 @@ struct RecipeCard: View {
             .frame(height: 44)
             }
             }
-            
+
             HStack {
                 Text("\(recipe.readyInMinutes ?? 0) min")
                     .font(.caption)
@@ -41,8 +42,7 @@ struct RecipeCard: View {
         .padding(10)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1.5)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
         )
     }
 }
-
