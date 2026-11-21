@@ -3,6 +3,7 @@ import SwiftData
 
 struct RegistrazioneView: View {
     @Binding var mostraRegistrazione: Bool
+    @Binding var appenaRegistrato: Bool
     @Environment(\.modelContext) private var context
     @Query var utenti: [Utente]
 
@@ -39,21 +40,21 @@ struct RegistrazioneView: View {
         return password.count >= 8 && haMaiuscola && haNumero
     }
 
-    let maiuscole = ["A","B", "C","D","E","F","G","H","I","J","K","L","M","N",
-                     "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-    let minuscole = ["a","b", "c","d","e","f","g","h","i","j","k","l","m","n",
-                     "n","o","p","q","r","s","t","u","v","w","x","y","z"]
+    let maiuscole = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+                     "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+    let minuscole = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+                     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
-    func inMinuscolo(_testo: String) -> String {
+    func inMinuscolo(_ testo: String) -> String {
         var risultato = ""
-        for carattere in testo{
+        for carattere in testo {
             var nuovo = "\(carattere)"
-            for indice in 0..<maiuscole.count{
-                if nuovo == maiuscole[indice]{
+            for indice in 0..<maiuscole.count {
+                if nuovo == maiuscole[indice] {
                     nuovo = minuscole[indice]
                 }
-             }
-             risultato = risultato + nuovo
+            }
+            risultato = risultato + nuovo
         }
         return risultato
     }
@@ -82,15 +83,15 @@ struct RegistrazioneView: View {
                 }
             }
 
-            Text("Username")
+            Text("Username").font(.headline)
             HStack {
                 Image(systemName: "person")
                 TextField("username", text: $username)
             }
             .padding(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.4), lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.4), lineWidth: 1))
 
-            Text("Email")
+            Text("Email").font(.headline)
             HStack {
                 Image(systemName: "envelope").foregroundColor(.gray).font(.headline)
                 TextField("email", text: $email)
@@ -99,7 +100,7 @@ struct RegistrazioneView: View {
             .overlay(RoundedRectangle(cornerRadius: 12)
                 .stroke(email.isEmpty || isEmailValid ? Color.gray.opacity(0.4) : Color.red, lineWidth: 1))
 
-            Text("Password")
+            Text("Password").font(.headline)
             HStack {
                 if isPasswordSecured {
                     SecureField("password", text: $password)
@@ -151,6 +152,7 @@ struct RegistrazioneView: View {
     }
 
     func registra() {
+        
         let emailMinuscola = inMinuscolo(email)
 
         for utente in utenti {
@@ -168,13 +170,14 @@ struct RegistrazioneView: View {
             nome: nome,
             cognome: cognome,
             username: username,
-            email: email,
+            email: emailMinuscola,
             password: password
         )
 
         context.insert(nuovoUtente)
         try? context.save()
 
+        appenaRegistrato = true
         mostraRegistrazione = false
     }
 }
