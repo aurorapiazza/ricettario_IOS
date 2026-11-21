@@ -3,6 +3,7 @@ import SwiftData
 
 struct LoginView: View {
     @Binding var mostraRegistrazione: Bool
+    @Binding var appenaRegistrato: Bool
     @Query var utenti: [Utente]
     @AppStorage("usernameLoggato") private var usernameLoggato = ""
 
@@ -68,6 +69,11 @@ struct LoginView: View {
             }
             .padding(.horizontal, 24)
 
+            if appenaRegistrato {
+                Text("Account creato! Ora accedi con i tuoi dati.")
+                    .foregroundColor(.green)
+            }
+
             if mostraErrore {
                 Text("Username o password non sono corretti.")
                     .foregroundColor(.red)
@@ -93,6 +99,7 @@ struct LoginView: View {
                 Text("Non hai un account?")
                     .font(.system(size: 14))
                 Button(action: {
+                    appenaRegistrato = false
                     mostraRegistrazione = true
                 }) {
                     Text("Registrati")
@@ -105,6 +112,7 @@ struct LoginView: View {
     }
 
     func accedi() {
+        appenaRegistrato = false
         for utente in utenti {
             if utente.username == username && utente.password == password {
                 usernameLoggato = utente.username
