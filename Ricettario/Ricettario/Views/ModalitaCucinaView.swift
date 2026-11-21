@@ -12,7 +12,7 @@ struct ModalitaCucinaView: View {
         for completo in ingredienti {
             if completo.id == ingrediente.id {
                 if let metrico = completo.measures?.metric {
-                    return "\(ingrediente.name) \(metrico.amount.formatted()) \(metrico.unitShort)"
+                    return "\(ingrediente.name) · \(metrico.amount.formatted()) \(metrico.unitShort)"
                 }
             }
         }
@@ -43,7 +43,7 @@ struct ModalitaCucinaView: View {
                     HStack(spacing: 6) {
                         ForEach(0..<passaggi.count, id: \.self) { index in
                             RoundedRectangle(cornerRadius: 2)
-                                .fill(index <= passaggioCorrente ? Color.black : Color.gray.opacity(0.2))
+                                .fill(index <= passaggioCorrente ? coloreApp : Color.gray.opacity(0.2))
                                 .frame(height: 4)
                         }
                     }
@@ -65,10 +65,10 @@ struct ModalitaCucinaView: View {
                         HStack(spacing: 8) {
                             Image(systemName: "clock")
                             if let durata = stepAttuale.length {
-                                Text("Passaggio \(durata.number) \(durata.unit)")
+                                Text("Passaggio · \(durata.number) \(durata.unit)")
                                     .font(.system(size: 14, weight: .bold))
                             } else {
-                                Text("Tempo totale \(tempoTotale) min")
+                                Text("Tempo totale · \(tempoTotale) min")
                                     .font(.system(size: 14, weight: .bold))
                             }
                         }
@@ -116,17 +116,25 @@ struct ModalitaCucinaView: View {
 
                     Spacer()
 
-                    Button(action: {
-                        if passaggioCorrente < passaggi.count - 1 {
+                    if passaggioCorrente == passaggi.count - 1 {
+                        Text("Buon appetito!")
+                            .bold()
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 14)
+                            .background(coloreApp)
+                            .cornerRadius(24)
+                    } else {
+                        Button(action: {
                             passaggioCorrente = passaggioCorrente + 1
+                        }) {
+                            Image(systemName: "arrow.right")
+                                .foregroundColor(.white)
+                                .padding(16)
+                                .background(coloreApp)
+                                .cornerRadius(26)
                         }
-                    }) {
-                        Image(systemName: "arrow.right")
-                            .foregroundColor(passaggioCorrente == passaggi.count - 1 ? .gray : .black)
-                            .padding(16)
-                            .overlay(Circle().stroke(passaggioCorrente == passaggi.count - 1 ? Color.gray : Color.black, lineWidth: 1))
                     }
-                    .disabled(passaggioCorrente == passaggi.count - 1)
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)
