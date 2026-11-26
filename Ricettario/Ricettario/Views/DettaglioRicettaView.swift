@@ -159,7 +159,7 @@ struct DettaglioRicettaView: View {
         }
         .onAppear {
             if dettaglio == nil {
-                api.loadRecipeDetail(id: recipe.id) { (ricetta) in
+                api.loadRecipeDetail(id: recipe.id) { (risposta) in
                 guard let ricetta = risposta else{
                     self.errore = true
                     return
