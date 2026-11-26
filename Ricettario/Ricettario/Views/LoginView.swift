@@ -17,6 +17,7 @@ struct LoginView: View {
             Spacer().frame(height: 20)
 
             VStack(spacing: 8) {
+                Text("FoodMood").font(.largeTitle).bold().foregroundColor(coloreApp)
                 Text("Bentornato!")
                     .font(.largeTitle)
                     .bold()
