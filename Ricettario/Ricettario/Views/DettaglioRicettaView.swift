@@ -7,6 +7,7 @@ struct DettaglioRicettaView: View {
     @State private var dettaglio: RecipeDetail?
     @State private var porzioni: Double = 4
     @State private var spuntati = [Bool]()
+    @State private var errore = false
 
     var ingredienti: [Ingredient] {
         return dettaglio?.extendedIngredients ?? []
@@ -75,7 +76,11 @@ struct DettaglioRicettaView: View {
                     BottonePreferito(recipe: recipe, dimensione: 28)
                 }
 
-                if dettaglio == nil {
+                if errore {
+                    Text("Non è stato possibile caricare la ricetta. Controlla la connessione.")
+                    .foregroundColor(.red)
+                }
+                else if dettaglio == nil {
                     Text("Caricamento della ricetta...")
                         .foregroundColor(.gray)
                 }
@@ -155,6 +160,10 @@ struct DettaglioRicettaView: View {
         .onAppear {
             if dettaglio == nil {
                 api.loadRecipeDetail(id: recipe.id) { (ricetta) in
+                guard let ricetta = risposta else{
+                    self.errore = true
+                    return
+                } 
                     self.dettaglio = ricetta
                     self.porzioni = ricetta.servings ?? 4
 

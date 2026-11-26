@@ -87,6 +87,7 @@ struct RegistrazioneView: View {
             HStack {
                 Image(systemName: "person")
                 TextField("username", text: $username)
+                 .textInputAutocapitalization(.never)
             }
             .padding(12)
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.4), lineWidth: 1))
@@ -95,6 +96,7 @@ struct RegistrazioneView: View {
             HStack {
                 Image(systemName: "envelope").foregroundColor(.gray).font(.headline)
                 TextField("email", text: $email)
+                 .textInputAutocapitalization(.never)
             }
             .padding(12)
             .overlay(RoundedRectangle(cornerRadius: 12)

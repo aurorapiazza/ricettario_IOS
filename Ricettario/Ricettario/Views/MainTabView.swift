@@ -40,7 +40,7 @@ struct MainTabView: View {
             .padding(.vertical, 10)
             .background(Color.white)
             .cornerRadius(30)
-            .overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.gray.opacity(0.3), linewidth: 1)
+            .overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.gray.opacity(0.3), lineWidth: 1)
             )
             .padding(.horizontal, 20)
             .padding(.top, 6)
